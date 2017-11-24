@@ -9,7 +9,9 @@ using namespace std;
 
 const unsigned int HEADER_BEGIN1 = 0x00000021;
 const unsigned int HEADER_BEGIN2 = 0x00000024;
-const unsigned int HEADER_END = 0x82000000;
+const unsigned int HEADER_END1 = 0x82000000;
+const unsigned int HEADER_END2 = 0x86000000;
+const unsigned int HEADER_END3 = 0x66000000;
 
 void usage(void)
 {
@@ -70,7 +72,8 @@ int main(int argc, char* argv[])
         }
         else
         */
-            if (word == HEADER_END && hdr_dt_cnt == 0)
+            if ((word == HEADER_END1 || word == HEADER_END2 || word == HEADER_END3)
+                && hdr_dt_cnt == 0)
         {
             unsigned int timestamp = *((unsigned int*)&buffer[cur-12]);
             string log(buffer.begin() + begin, buffer.begin() + cur - 12 + 1);
