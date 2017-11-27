@@ -1,17 +1,22 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <unordered_set>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 using namespace std;
 
-const unsigned int HEADER_BEGIN1 = 0x00000021;
-const unsigned int HEADER_BEGIN2 = 0x00000024;
-const unsigned int HEADER_END1 = 0x82000000;
-const unsigned int HEADER_END2 = 0x86000000;
-const unsigned int HEADER_END3 = 0x66000000;
+const unsigned int HEADER_BEGIN[] = {
+    0x00000021,
+    0x00000024 };
+const unsigned int HEADER_END[] = {
+    0x82000000,
+    0xC6000000,
+    0x86000000,
+    0x66000000,
+    0xC2000000 };
 
 void usage(void)
 {
@@ -51,7 +56,10 @@ int main(int argc, char* argv[])
     int bufsize = fsize - start_offset;
 
     vector<char> buffer(bufsize, 0);
-    map<unsigned int, string> logs;
+    unordered_set<unsigned int> end_markers;
+
+    for (int i = 0; i < sizeof(HEADER_END)/sizeof(unsigned int); ++i)
+        end_markers.insert (HEADER_END[i]);
 
     if (fread (&buffer[0], bufsize, 1, fp) != 1)
     {
@@ -59,6 +67,7 @@ int main(int argc, char* argv[])
         return -1;
     }
 
+    map<unsigned int, string> logs;
     unsigned int begin = 0, cur = 0;
     int hdr_dt_cnt = 0;
     while (cur < buffer.size())
@@ -72,8 +81,7 @@ int main(int argc, char* argv[])
         }
         else
         */
-            if ((word == HEADER_END1 || word == HEADER_END2 || word == HEADER_END3)
-                && hdr_dt_cnt == 0)
+        if (end_markers.count (word) && hdr_dt_cnt == 0)
         {
             unsigned int timestamp = *((unsigned int*)&buffer[cur-12]);
             string log(buffer.begin() + begin, buffer.begin() + cur - 12 + 1);

@@ -1,7 +1,7 @@
 CC=gcc
 CPP=g++
-CFLAGS=-I. -std=c++11
-CPPFLAGS=-I. -std=c++11
+CFLAGS=-I. -std=c++11 -g -O2
+CPPFLAGS=-I. -std=c++11 -g -O2
 #DEPS = klogparser.h
 OBJ = src/klogparser.o
 
