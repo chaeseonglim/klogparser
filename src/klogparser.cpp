@@ -83,10 +83,13 @@ int main(int argc, char* argv[])
         */
         if (end_markers.count (word) && hdr_dt_cnt == 0)
         {
-            unsigned int timestamp = *((unsigned int*)&buffer[cur-12]);
-            string log(buffer.begin() + begin, buffer.begin() + cur - 12 + 1);
-            begin = cur + 4;
-            logs[timestamp] = log;
+			if (cur > 12 && begin + 12 < cur)
+			{
+				unsigned int timestamp = *((unsigned int*)&buffer[cur-12]);
+				string log(buffer.begin() + begin, buffer.begin() + cur - 12 + 1);
+				begin = cur + 4;
+				logs[timestamp] = log;
+			}
 
             hdr_dt_cnt = 0;
         }
