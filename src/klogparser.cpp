@@ -168,20 +168,20 @@ int main(int argc, char* argv[])
         */
         if (end_markers.count (word) && hdr_dt_cnt == 0)
         {
-			int n = sizeof(printk_log) - sizeof(word);
-			if (cur > n && begin + n < cur)
-			{
-				unsigned long long timestamp =
-					*((unsigned long long*)&buffer[cur - n]);
-				string log;
-				log += "[";
-				log += to_string(cur);
-				log += "] ";
-				log.insert (log.end(), buffer.begin() + begin,
-					buffer.begin() + cur - n + 1);
-				begin = cur + 4;
-				logs[timestamp] = log;
-			}
+            int n = sizeof(printk_log) - sizeof(word);
+            if (cur > n && begin + n < cur)
+            {
+                unsigned long long timestamp =
+                    *((unsigned long long*)&buffer[cur - n]);
+                string log;
+                log += "[";
+                log += to_string(cur);
+                log += "] ";
+                log.insert (log.end(), buffer.begin() + begin,
+                    buffer.begin() + cur - n + 1);
+                begin = cur + 4;
+                logs[timestamp] = log;
+            }
 
             hdr_dt_cnt = 0;
         }
